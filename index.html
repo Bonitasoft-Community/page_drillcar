@@ -1,0 +1,313 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <title>Drill Car</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="style/animate.css" />
+    <link rel="stylesheet" href="style/bootstrap.min.css">
+	<link rel="stylesheet" href="style/main.css">
+	<link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/ng-modal.css">
+	<link rel="stylesheet" href="style/angular-material.min.css">
+
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script type="text/javascript" src="https://www.google.com/uds/?file=visualization&amp;v=1&amp;hl=fr&amp;packages=corechart&amp;async=2"></script>
+	<link type="text/css" href="https://www.google.com/uds/api/visualization/1.0/ff67c3772da186a412ae3231c32409e9/ui+fr.css" rel="stylesheet">
+	<script type="text/javascript" src="https://www.google.com/uds/api/visualization/1.0/ff67c3772da186a412ae3231c32409e9/format+fr,default+fr,ui+fr,corechart+fr.I.js"></script>
+	<link href="https://ajax.googleapis.com/ajax/static/modules/gviz/1.0/core/tooltip.css" rel="stylesheet" type="text/css">
+
+<style>
+.Loading {
+    display: inline-block;
+    vertical-align: middle;
+    background-position: center;
+    background:no-repeat;
+    background-image: url('data:image/gif;base64,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');
+    width:20px;
+    height:20px;
+    margin-top:6px;
+    margin-right:7px;
+}
+.AutocompleteDropDown {
+	background-color: #fcf8e3;
+	}
+</style>
+
+
+</head>
+<body ng-app="drillapp">
+<!-- Show the directory currently used - remove it on a production server to not display the internal disk structure -->
+<!--  Page Directory: @_PAGEDIRECTORY_@ -->
+
+
+<center>
+		<table><tr><td><h1>Drill Car</h1></td><td rowspan="2"><img src="img/drillcar.jpg" width="150" heigth="150" /></td></tr>
+			<tr><td>
+				<center>
+					V1.0
+				</center>
+			</td></tr>
+			<tr><td>
+				<div id="showHistory" ng-if="ctrl.isshowhistory" style="border-width:2px;border-style:ridge;border-color:blue">
+					1.0 2019 November<br>
+				</div>
+			</td></tr>
+		</table>
+</center>
+		
+		
+<div class="container-fluid" id="accordion">
+<div class="row">
+<div class="component col-xs-12"  ng-controller="DrillControler as ctrl">
+
+	<ul class="nav nav-tabs"  ng-class="{'nav-stacked': vertical, 'nav-justified': justified}" style="border-bottom: 1px solid #c2c2c2;">
+		<li ng-class="{active: active, disabled: false}" id="form-tab" heading="All" active="true" title="Server Properties" select="ctrl.navbaractiv == 'properties'" class="{{ctrl.getNavClass('Properties')}}" style="{{ctrl.getNavStyle('properties')}}">
+			  <a ng-click="ctrl.navbaractiv = 'properties';"   class="ng-binding">Server Properties</a>
+		</li>
+		<li ng-class="{active: active, disabled: false}" id="form-tab" heading="Context" active="true" title="Tomcat context" select="ctrl.navbaractiv == 'context'" class="{{ctrl.getNavClass('Context')}}" style="{{ctrl.getNavStyle('context')}}">
+			  <a  ng-click="ctrl.navbaractiv='context'"  class="ng-binding">Tomcat context</a>
+		</li>
+		<li ng-class="{active: active, disabled: false}" id="form-tab" heading="Timer" active="true" title="Maintenance" select="ctrl.navbaractiv == 'Maintenance'" class="{{ctrl.getNavClass('Differentiel')}}" style="{{ctrl.getNavStyle('Differentiel')}}">
+			  <a  ng-click="ctrl.navbaractiv='differentiel'" class="ng-binding">Differentiel</a>
+		</li>
+	</ul>
+
+
+	
+	<!--  ************************************************************  -->	
+	<!--  Properties Jobs		 										-->
+	<!--  ************************************************************  -->		
+	<!-- Keep it ng-show, else the file drop will not work ! -->	
+	<div class="col-lg-12" ng-show="ctrl.navbaractiv == 'properties'">
+		<div ng-show="ctrl.inprogress">
+							<span class="Loading">.</span>
+							Please wait, collect in progress
+		</div>
+		<button class="btn btn-success" ng-click="ctrl.launchAnalysis()">Collect</button> <p>
+		<h1>Platform</h1>
+	
+		<h1>Tenant</h1>
+		<select  ng-model="ctrl.properties.tenantid" >
+			<option ng-repeat="item in ctrl.properties.listtenant" value="{{item.tenantid}}">{{item.displayname}}</option>
+		</select>
+		
+	</div>
+
+
+	<!--  ************************************************************  -->	
+	<!--  Context Jobs		 										-->
+	<!--  ************************************************************  -->		
+	<!-- Keep it ng-show, else the file drop will not work ! -->	
+	<div class="col-lg-12" ng-show="ctrl.navbaractiv == 'context'">
+	
+		<div ng-show="ctrl.inprogress">
+							<span class="Loading">.</span>
+							Please wait, collect in progress
+		</div>
+		<button class="btn btn-success" ng-click="ctrl.launchAnalysis()">Collect</button> <p>
+		<h1>Context</h1>
+		
+		<h1>Datasource</h1>
+		
+		<h1>Logs</h1>
+	</div>
+
+		
+	<!--  ************************************************************  -->	
+	<!--  Differentiel	 										-->
+	<!--  ************************************************************  -->		
+	<!-- Keep it ng-show, else the file drop will not work ! -->	
+	<div class="col-lg-12" ng-show="ctrl.navbaractiv == 'differentiel'">
+
+		<div class="col-lg-10">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Comparison parameters</div>
+				<div>
+					<p>
+					<table style="width:100%">
+					<tr style="padding:10px"><td colspan="2" style="text-align:center;background-color: rgb(114, 191, 210)">Application</td></tr>
+					<tr style="padding:10px 5px 20px 10px;"><td>Comparison application</td><td>
+						<input type="checkbox" ng-model="ctrl.diff.param.useLocalFile" title="Use this Bonita application to compare with the referentiel"></input>Use this application<br>
+						</td>
+					</tr>
+					<tr style="padding:10px 5px 20px 10px;"><td>Comparison application directory:</td>
+						<td>
+						<input  ng-model="ctrl.diff.param.comparaisonFile" style="width: 100%;" ng-disabled="ctrl.diff.param.useLocalFile" title="Give a directory accessible by the server, where a bundle exists"></input> <br>
+					 </td>
+					 </tr>
+					 
+					 
+					<tr style="padding: 10px;"><td colspan="2" style="text-align:center;background-color: rgb(114, 191, 210)">Referentiel</td></tr>
+					<tr style="padding: 10px 5px 20px 10px;">
+						<td>Reference application</td><td>
+							<input type="checkbox" ng-model="ctrl.diff.param.referentielIsABundle" title="Referentiel is a bundle. Then, tenant setup is compared to the template (else, directory per directory)"></input>Reference is a Bundle? If yes, the bundle must be uncompressed in a directory, and started one time (bonita.war must be uncompressed too)<br>
+						</td>
+					 </tr>
+					 <tr style="padding: 10px 5px 20px 10px;">
+					 	<td>Reference application directory:</td>
+						<td><input  ng-model="ctrl.diff.param.referenceFile" style="width: 100%;" title="Give a directory accessible by the server, where a Bonita Bundle is deployed"></input></td>
+					</tr>
+					
+					
+					<tr style="padding: 10px;"><td colspan="2" style="text-align:center;background-color: rgb(114, 191, 210)">Parameters</td></tr>
+					<tr style="padding: 10px 5px 20px 10px;"><td>Compare XML:</td><td><input type="checkbox" ng-model="ctrl.diff.param.compareContextXml" title="XML files are opened, and compare nodes per nodes"></input></td></tr> 
+					<tr style="padding: 10px 5px 20px 10px;"><td>Ignore image:</td><td><input type="checkbox" ng-model="ctrl.diff.param.ignoreImage" title="Images (JPEG, GIFF, ...) files are ignored"></input></td></tr>
+					<tr style="padding: 10px 5px 20px 10px;"><td>Ignore Bonita Transation:</td><td><input type="checkbox" ng-model="ctrl.diff.param.ignoreBonitaTranslationFile" title="Bonita Translation file are ignored"></input></td></tr>
+					<tr style="padding: 10px 5px 20px 10px;"><td>Ignore temporary directory:</td><td><input type="checkbox" ng-model="ctrl.diff.param.ignoreTemp" title="Temporary directory (temp, tmp) are ignored in the comparison"></input></td></tr>
+					<tr style="padding: 10px 5px 20px 10px;"><td>Ignore Licence files:</td><td><input type="checkbox" ng-model="ctrl.diff.param.ignoreLicence" title="License file are ignored"></input></td></tr>
+					<tr style="padding: 10px 5px 20px 10px;"><td>Ignore setup directory:</td><td><input type="checkbox" ng-model="ctrl.diff.param.ignoreSetup" title="Setup directory are ignored, then the comparison is only on the environment (memory, SSO..)"></input></td></tr>
+					<tr style="padding: 10px 5px 20px 10px;"><td>Ignore Defered JS:</td><td><input type="checkbox" ng-model="ctrl.diff.param.ignoreDeferedJs" title="Execution generated multiple deferended JS to improve performance. They are ignored."></input></td></tr>
+					</table> 
+					<center>
+						<div ng-show="ctrl.inprogress">
+							<span class="Loading">.</span>
+							Please wait, collect in progress
+						</div>
+					
+						<button class="btn btn-success" ng-click="ctrl.diffAnalysis()">Analysis</button> <p>
+					</center>
+					<!--  <div class="alert alert-info">{{ctrl.diff.param}}</div> -->
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-2">
+			<div class="panel panel-info">
+				<div class="panel-heading">Statistics</div>
+				<div>
+					<table>
+						<tr><td>Number of difference</td><td style="text-align:right">{{ctrl.diff.result.diffNb}}</td></tr>
+						<tr><td>Time analysis</td><td style="text-align:right">{{ctrl.diff.result.diffTimeInMs}} ms</td></tr>
+						<tr><td colspan="2" style="text-align:center;background-color: rgb(114, 191, 210)">Number of files per type</td></tr>
+						<tr ng-repeat="(key, value) in ctrl.diff.result.countpercontent">
+							<td>{{key}}:</td><td style="text-align:right">{{value}}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-12">
+			<h3>Errors</h3>
+			
+			<div ng-bind-html="ctrl.getHtml( ctrl.diff.result.listevents)"></div>
+			
+		</div>
+		<div class="col-lg-12">
+			<h3>Differences</h3>
+		
+			<!--  Final status -->
+			<div ng-if="ctrl.diff.result.finalstatus == 'IDENTICAL'">
+				<div class="alert alert-success">Two applications are identicals</div>
+			</div>
+		
+			<!-- <a ng-click="ctrl.analysisExportData()" title="Click to export to Excel file"><img src="img/docexcel.gif" /></a> -->
+			
+			<div class="btn-group btn-group-toggle" >
+			  <label class="btn btn-danger">
+			    <input type="radio" value="0" name="displaylevel" data-ng-model="ctrl.diff.displaylevel">Only CRITICAL
+			  </label>
+			  <label class="btn btn-warning">
+			    <input type="radio" value="1" name="displaylevel" data-ng-model="ctrl.diff.displaylevel">CRITICAL / IMPORTANT
+			  </label>
+			  <label class="btn btn-info">
+			    <input type="radio" value="100" name="displaylevel" data-ng-model="ctrl.diff.displaylevel">All
+			  </label>
+			</div>
+
+
+			
+			
+			<table class="table table-striped table-hover table-condensed" style="background-color:#dff0d8">
+				<tbody ng-repeat="item in ctrl.diff.result.comparaisons">
+					<tr ng-if="ctrl.diffDisplay( item )">
+						<th colspan="1" style="width: 40px"><input type="checkbox" ng-model="item.show"></input></th>
+						<th style="text-align:right;width: 40px">{{item.compoundSize}}</th>
+						<th style="width: 100px">{{item.level}}</th>
+						<th colspan="3">{{item.compoundName}}</td>
+					</tr>
+					<!--  <tr ng-if="ctrl.diffDisplay( item )"><td colspan="8">list={{item.listCompound}}<br>{{ctrl.diffDisplay( item )}}</td></tr> -->
+					<tr ng-if="ctrl.diffDisplay( item ) && item.show">
+						<td colspan="2"></td>
+						<td colspan="8">
+
+							<table>
+							<tbody ng-repeat="compound in item.listCompound">
+								<tr style="border-top: 1px solid;border-right: 1px solid;border-left: 1px solid;">
+									<td style="font-size: small;font-style: italic;font-weight: bold;"><b>{{compound.status}}</b></td>
+									<td style="font-size: small;font-style: italic;font-weight: bold;"><b>{{compound.level}}</b></td>
+								</tr>
+								<tr>
+									<td colspan="2" style="border-right: 1px solid;border-left: 1px solid;">{{compound.explanation}}</td>
+								</tr>
+								<tr style="border-right: 1px solid;border-left: 1px solid;" ng-if="compound.withValues">
+									<td style="background-color:#accee5;vertical-align:top"><center><div class="label label-info">Local Value</div></center><br>
+										{{compound.localValue}}</td>
+									<td style="background-color:#9fe790;vertical-align:top"><center></center><div class="label label-success">Referentiel Value</div></center><br>
+										{{compound.referentielValue}}</td>
+								</tr>
+								<tr style="border-bottom: 1px solid;"><td colspan="2"></td></tr>
+							</tbody>
+							</table>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div> <!--  class component -->
+</div>
+</div>
+
+
+
+<!-- Third party dependencies -->
+
+<script src="3rd-party/jquery.min.js"></script>
+
+<script src="3rd-party/angular.min.js"></script>
+
+<script src="3rd-party/angular-resource.min.js"></script>
+<script src="3rd-party/angular-cookies.min.js"></script>
+
+<script src="3rd-party/bootstrap/js/bootstrap.min.js"></script>
+<script src="3rd-party/angular-bootstrap-tpls.min.js"></script>
+<script src="3rd-party/angular-file-upload.js"></script>
+<script src="3rd-party/ng-google-chart.js"></script>
+<script src="3rd-party/angular-sanitize.min.js"></script>
+<script src="3rd-party/ng-modal.min.js"></script>
+
+<!--  Material -->
+<script src="3rd-party/angular-animate.min.js"></script>
+<script src="3rd-party/angular-aria.min.js"></script>
+<script src="3rd-party/angular-messages.min.js"></script>
+<script src="3rd-party/angular-material.min.js"></script>
+
+
+
+
+
+
+
+<!-- Application dependencies -->
+<!-- to be sure to reload every time the JS file, add this marker -->
+<script src="pageResource?page=custompage_drillcar&location=drillmonitor.js&t=@_CURRENTTIMEMILIS_@"></script>
+
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/alasql/0.3/alasql.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.10.3/xlsx.full.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.10.3/xlsx.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.10.3/xlsx.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.10.3/xlsx.core.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.10.3/cpexcel.js"></script>
+
+
+</body>
+</html>
