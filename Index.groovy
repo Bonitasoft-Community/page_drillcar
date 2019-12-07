@@ -45,7 +45,7 @@ import org.bonitasoft.engine.session.APISession;
 
 public class Index implements PageController {
 
-	private static String pageName="ping";
+	private static String pageName="drillcar";
 	private static Logger loggerCustomPage= Logger.getLogger("org.bonitasoft.custompage."+pageName+".groovy");
 	
 	
@@ -213,10 +213,14 @@ public class Index implements PageController {
 				out.print(indexContent);
 				out.flush();
 				out.close();
-				loggerCustomPage.info("#### "+pageName+": return index.hml size("+indexContent.length+"]");
+				// loggerCustomPage.info("#### "+pageName+": return index.hml size("+indexContent.length()+"]");
 				
 		} catch (Exception e) {
-			loggerCustomPage.severe("#### "+pageName+":Error "+e.toString());
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            String exceptionDetails = sw.toString();
+           
+			loggerCustomPage.severe("#### "+pageName+":Error "+e.toString()+" at "+exceptionDetails);
 		}
 		}
 

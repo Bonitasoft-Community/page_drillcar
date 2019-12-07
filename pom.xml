@@ -13,9 +13,16 @@
 			<version>${bonita.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.bonitasoft.platform/platform-setup -->
+		<!-- <dependency>
+    		<groupId>org.bonitasoft.platform</groupId>
+    		<artifactId>platform-setup</artifactId>
+			<version>${bonita.version}</version>
+		</dependency>
+		-->
 		<dependency>
-			<groupId>org.bonita.serverconfiguration</groupId>
-			<artifactId>BonitaServerConfiguration</artifactId>
+			<groupId>org.bonitasoft.serverconfiguration</groupId>
+			<artifactId>bonita-serverconfiguration</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
@@ -67,7 +74,7 @@
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
-			<id>logPageBonita</id>
+			<id>bonitacommunitymaven</id>
 			<name>logPageBonita</name>
 			<url>https://raw.githubusercontent.com/Bonitasoft-Community/bonitamavenrepository/master</url>
 			<layout>default</layout>

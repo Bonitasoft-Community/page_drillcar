@@ -35,7 +35,7 @@ appCommand.controller('DrillControler',
 	this.showhistory = function(show) {
 		this.isshowhistory = show;
 	}
-	this.navbaractiv='differentiel';
+	this.navbaractiv='properties';
 	
 	this.getNavClass = function( tabtodisplay )
 	{
@@ -53,8 +53,120 @@ appCommand.controller('DrillControler',
 	
 	this.inprogress=false;
 
+	// -----------------------------------------------------------------------------------------
+	//  										Properties
+	// -----------------------------------------------------------------------------------------
+	this.props = {	'param' : { 'collectSetup':true, 'collectServer':true, 'collectAnalysis':true, 'useLocalFile':true, 'displaylevel': 'all'}, 
+					'platform': [], 
+					'tenants': { 
+						'list':[], 
+						'setup': [] }
+				 };
 	
+	this.propsCollect = function( collectSetup, collectServer, collectAnalysis) {	
+		var self=this;
+		self.inprogress=true;
 
+		self.props.param.collectSetup = collectSetup;
+		self.props.param.collectServer = collectServer;
+		self.props.param.collectAnalysis = collectAnalysis;
+		
+		
+		self.props.platform = [];
+		self.props.tenants = {};
+		// 7.6 : the server force a cache on all URL, so to bypass the cache, then create a different URL 
+		var d = new Date();
+		
+		
+		var json = encodeURI( angular.toJson( self.props.param, false));
+		
+		$http.get( '?page=custompage_drill&action=propscollect&paramjson='+json+'&t='+d.getTime() )
+				.success( function ( jsonResult, statusHttp, headers, config ) {
+					
+					// connection is lost ?
+					if (statusHttp==401 || typeof jsonResult === 'string') {
+						console.log("Redirected to the login page !");
+						window.location.reload();
+					}
+					console.log("propscollect",jsonResult);
+					self.props.listevents 			= jsonResult.listevents;
+					self.props.setup 				= jsonResult.setup;
+					self.props.tomcat 				= jsonResult.tomcat;
+					self.props.analysis 			= jsonResult.analysis;
+					
+					self.inprogress=false;
+
+					var listTenants =self.propsGetTenants();
+					
+					if (listTenants.length==1) {
+						self.props.currenttenantid = listTenants[ 0 ];
+					}
+				})
+				.error( function() {
+					self.inprogress=false;
+				});
+			
+	
+	};
+	
+	this.propsShow = function( keypropertie)
+	{
+		if (keypropertie.isEnable)
+			return true;
+		return this.props.param.displaylevel === 'all';
+	}
+	this.propsStyle = function( keypropertie)
+	{
+		var style="border-top: 2px solid;padding: 1px 10px"
+		if (keypropertie.isEnable)
+			style += "font-style: italic;";
+		return style;
+	}
+	this.propsGetTenants = function() {
+		var listTenants = [];
+		for (var i in this.props.tenants)
+			listTenants.push( i );
+		return listTenants;
+	}
+	
+	// Expand or close all properties
+	this.propsExpand = function( expand) {
+		
+		for (var classproperties in this.props.properties) {
+			// console.log("classproperties on expand["+classproperties+"]");
+			// console.log("listClassJson ="+angular.toJson( this.props.properties[ classproperties ]))
+			for (var propertieindex in this.props.properties[ classproperties ]) {
+				var propertiefile = this.props.properties[ classproperties ][ propertieindex ];
+				// console.log("propertues file="+propertiefile);
+				propertiefile.show = expand;
+			}
+		}
+		
+		// Tenant
+		console.log("tenants now:");
+		console.log("alltenants ="+angular.toJson( this.props.tenants ));
+		for (var tenantid in this.props.tenants) {
+			
+			// console.log("listTenant ="+angular.toJson( this.props.tenants[ tenantid ]))
+			for (var propertieindex in this.props.tenants[ tenantid ]) {
+				var propertiefile = this.props.tenants[ tenantid ][ propertieindex ];
+				
+				propertiefile.show = expand;
+			}
+		}
+	}
+	
+	this.indicatorCssClass = function (indicator ) {
+		if (indicator.level ===  'DANGER')
+			return "panel panel-danger";
+		if (indicator.level ===  'WARNING')
+			return "panel panel-warning";
+		if (indicator.level === 'INFO')
+			return "panel panel-info";
+		if (indicator.level === 'SUCCESS')
+			return "panel panel-success";
+		return "panel panel-info";
+	}
 	// -----------------------------------------------------------------------------------------
 	//  										Differentiel
 	// -----------------------------------------------------------------------------------------
@@ -125,9 +237,9 @@ appCommand.controller('DrillControler',
 		self.autocomplete.search = searchText;
 		self.inprogress=true;
 
-		var param={ 'userfilter' :  self.autocomplete.search};
+		var paramJson={ 'userfilter' :  self.autocomplete.search};
 
-		var json = encodeURI( angular.toJson( param, false));
+		var json = encodeURI( angular.toJson( paramJson, false));
 		// 7.6 : the server force a cache on all URL, so to bypass the cache, then create a different URL
 		var d = new Date();
 
@@ -150,24 +262,30 @@ appCommand.controller('DrillControler',
 	//  										Excel
 	// -----------------------------------------------------------------------------------------
 
-	this.exportData = function ()
+	this.exportData = function ( nameData )
 	{
 		//Start*To Export SearchTable data in excel
 	// create XLS template with your field.
-		var mystyle = {
-        headers:true,
-			columns: [
-			{ columnid: 'name', title: 'Name'},
-			{ columnid: 'version', title: 'Version'},
-			{ columnid: 'state', title: 'State'},
-			{ columnid: 'deployeddate', title: 'Deployed date'},
-			],
-		};
+        var trackingJson = [];
+    	var mystyle = {};
+    	if (nameData=== "comparison") {
+    		var trackingJson = this.diff.result
 
+        	var mystyle = {
+    				headers:true,
+    				columns: [
+    					{ columnid: 'name', title: 'Name'},
+    					{ columnid: 'version', title: 'Version'},
+    					{ columnid: 'state', title: 'State'},
+    					{ columnid: 'deployeddate', title: 'Deployed date'},
+    					],
+    		};
+    	}
+    	
+    	
         //get current system date.
         var date = new Date();
         $scope.CurrentDateTime = $filter('date')(new Date().getTime(), 'MM/dd/yyyy HH:mm:ss');
-		var trackingJson = this.listprocesses
         //Create XLS format using alasql.js file.
         alasql('SELECT * INTO XLS("Process_' + $scope.CurrentDateTime + '.xls",?) FROM ?', [mystyle, trackingJson]);
     };
@@ -181,8 +299,8 @@ appCommand.controller('DrillControler',
 		var self=this;
 		self.inprogress=true;
 
-		var param={ 'firstname': this.propsFirstName };
-		var json = encodeURI( angular.toJson( param, false));
+		var paramJson={ 'firstname': this.propsFirstName };
+		var json = encodeURI( angular.toJson( paramJson, false));
 
 		// 7.6 : the server force a cache on all URL, so to bypass the cache, then create a different URL
 		var d = new Date();
@@ -220,7 +338,7 @@ appCommand.controller('DrillControler',
 					alert('an error occure');
 					});
 	}
-	this.loadProps();
+
 
 
 	<!-- Manage the event -->
@@ -242,7 +360,7 @@ appCommand.controller('DrillControler',
 	// tool
 	// -----------------------------------------------------------------------------------------
 
-	this.getHtml = function(listevents ) {
+	this.getHtml = function( listevents ) {
 		// console.log("getHtml:Start (r/o) source="+sourceContext);
 		return $sce.trustAsHtml(listevents);
 	}

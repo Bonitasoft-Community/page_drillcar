@@ -103,8 +103,8 @@ public class Actions {
     private static Logger logger= Logger.getLogger("org.bonitasoft.custompage.longboard.groovy");
     
     
-    private static EVENT_USERS_FOUND = new BEvent("org.bonitasoft.custompage.ping", 1, Level.INFO, "Number of users found in the system", "", "", "");
-    private static EVENT_FAKE_ERROR  = new BEvent("com.bonitasoft.ping", 1, Level.APPLICATIONERROR, "Fake error", "This is not a real error", "No consequence", "don't call anybody");
+    private static EVENT_USERS_FOUND = new BEvent("org.bonitasoft.custompage.drillcar", 1, Level.INFO, "Number of users found in the system", "", "", "");
+    private static EVENT_FAKE_ERROR  = new BEvent("com.bonitasoft.custompage.drillcar", 1, Level.APPLICATIONERROR, "Fake error", "This is not a real error", "No consequence", "don't call anybody");
 
     
       // 2018-03-08T00:19:15.04Z
@@ -149,7 +149,11 @@ public class Actions {
                 File pageDirectory = pageResourceProvider.getPageDirectory();
                 actionAnswer.responseMap.putAll( DrillCarAPI.diffAnalysis( jsonParam , pageDirectory ));
 			}
-			
+            else if ("propscollect".equals(action))
+            {
+                File pageDirectory = pageResourceProvider.getPageDirectory();
+                actionAnswer.responseMap.putAll( DrillCarAPI.propsCollects( jsonParam , pageDirectory ));
+            }
 			else if ("saveprops".equals(action))	{
 				logger.info("Save properties paramJsonSt="+paramJsonSt);
 				if (jsonParam!=null)
@@ -167,14 +171,14 @@ public class Actions {
 					catch( Exception e )
 					{
 						logger.severe("Exception "+e.toString());
-						listEvents.add( new BEvent("com.bonitasoft.ping", 10, Level.APPLICATIONERROR, "Error using BonitaProperties", "Error :"+e.toString(), "Properties is not saved", "Check exception"));
+						listEvents.add( new BEvent("com.bonitasoft.drillcar", 10, Level.APPLICATIONERROR, "Error using BonitaProperties", "Error :"+e.toString(), "Properties is not saved", "Check exception"));
 					}
 				}
 				else
-					listEvents.add( new BEvent("com.bonitasoft.ping", 11, Level.APPLICATIONERROR, "JsonHash can't be decode", "the parameters in Json can't be decode", "Properties is not saved", "Check page"));
+					listEvents.add( new BEvent("com.bonitasoft.drillcar", 11, Level.APPLICATIONERROR, "JsonHash can't be decode", "the parameters in Json can't be decode", "Properties is not saved", "Check page"));
 
 			}
-			if ("loadprops".equals(action)) {
+			else if ("loadprops".equals(action)) {
 				try
 				{
 					logger.info("Load properties");
@@ -191,14 +195,13 @@ public class Actions {
 				catch( Exception e )
 				{
 					logger.severe("Exception "+e.toString());
-					listEvents.add( new BEvent("com.bonitasoft.ping", 10, Level.APPLICATIONERROR, "Error using BonitaProperties", "Error :"+e.toString(), "Properties is not saved", "Check exception"));
+					listEvents.add( new BEvent("com.bonitasoft.drillcar", 10, Level.APPLICATIONERROR, "Error using BonitaProperties", "ErrorLoadprops :"+e.toString(), "Properties is not saved", "Check exception"));
 
 				}
 
 			}
              
-            actionAnswer.responseMap.put("listevents",BEventFactory.getHtml( listEvents));
-                
+               
             
             logger.info("#### log:Actions END responseMap ="+actionAnswer.responseMap.size());
             return actionAnswer;

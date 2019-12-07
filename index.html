@@ -69,18 +69,28 @@
 <div class="row">
 <div class="component col-xs-12"  ng-controller="DrillControler as ctrl">
 
+
+			
 	<ul class="nav nav-tabs"  ng-class="{'nav-stacked': vertical, 'nav-justified': justified}" style="border-bottom: 1px solid #c2c2c2;">
-		<li ng-class="{active: active, disabled: false}" id="form-tab" heading="All" active="true" title="Server Properties" select="ctrl.navbaractiv == 'properties'" class="{{ctrl.getNavClass('Properties')}}" style="{{ctrl.getNavStyle('properties')}}">
+		<li ng-class="{active: active, disabled: false}" id="form-tab" heading="properties" active="true" title="Server Properties" select="ctrl.navbaractiv == 'properties'" class="{{ctrl.getNavClass('properties')}}" style="{{ctrl.getNavStyle('properties')}}">
 			  <a ng-click="ctrl.navbaractiv = 'properties';"   class="ng-binding">Server Properties</a>
 		</li>
-		<li ng-class="{active: active, disabled: false}" id="form-tab" heading="Context" active="true" title="Tomcat context" select="ctrl.navbaractiv == 'context'" class="{{ctrl.getNavClass('Context')}}" style="{{ctrl.getNavStyle('context')}}">
+		<li ng-class="{active: active, disabled: false}" id="form-tab" heading="context" active="true" title="Tomcat context" select="ctrl.navbaractiv == 'context'" class="{{ctrl.getNavClass('context')}}" style="{{ctrl.getNavStyle('context')}}">
 			  <a  ng-click="ctrl.navbaractiv='context'"  class="ng-binding">Tomcat context</a>
 		</li>
-		<li ng-class="{active: active, disabled: false}" id="form-tab" heading="Timer" active="true" title="Maintenance" select="ctrl.navbaractiv == 'Maintenance'" class="{{ctrl.getNavClass('Differentiel')}}" style="{{ctrl.getNavStyle('Differentiel')}}">
+		<li ng-class="{active: active, disabled: false}" id="form-tab" heading="analysis" active="true" title="Recommendations" select="ctrl.navbaractiv == 'recommendations'" class="{{ctrl.getNavClass('recommendations')}}" style="{{ctrl.getNavStyle('recommendations')}}">
+			  <a  ng-click="ctrl.navbaractiv='recommendations'" class="ng-binding">Recommendations</a>
+		</li>
+		<li ng-class="{active: active, disabled: false}" id="form-tab" heading="differentiel" active="true" title="Differentiel" select="ctrl.navbaractiv == 'differentiel'" class="{{ctrl.getNavClass('differentiel')}}" style="{{ctrl.getNavStyle('differentiel')}}">
 			  <a  ng-click="ctrl.navbaractiv='differentiel'" class="ng-binding">Differentiel</a>
 		</li>
+		<li ng-class="{active: active, disabled: false}" id="form-tab" heading="parameters" active="true" title="Parameters" select="ctrl.navbaractiv == 'parameters'" class="{{ctrl.getNavClass('differentiel')}}" style="{{ctrl.getNavStyle('differentiel')}}">
+			  <a  ng-click="ctrl.navbaractiv='parameters'" class="ng-binding">Parameters</a>
+		</li>
+		
+		
 	</ul>
-
+	
 
 	
 	<!--  ************************************************************  -->	
@@ -88,40 +98,284 @@
 	<!--  ************************************************************  -->		
 	<!-- Keep it ng-show, else the file drop will not work ! -->	
 	<div class="col-lg-12" ng-show="ctrl.navbaractiv == 'properties'">
-		<div ng-show="ctrl.inprogress">
-							<span class="Loading">.</span>
-							Please wait, collect in progress
-		</div>
-		<button class="btn btn-success" ng-click="ctrl.launchAnalysis()">Collect</button> <p>
-		<h1>Platform</h1>
-	
-		<h1>Tenant</h1>
-		<select  ng-model="ctrl.properties.tenantid" >
-			<option ng-repeat="item in ctrl.properties.listtenant" value="{{item.tenantid}}">{{item.displayname}}</option>
-		</select>
+		<p>
+		<center>
+			<div ng-show="ctrl.inprogress">
+				<span class="Loading">.</span>
+				Please wait, collect in progress
+			</div>
 		
-	</div>
+			<button class="btn btn-success" ng-click="ctrl.propsCollect( true, false, false )" ng-disabled="ctrl.inprogress">Collect Setup properties</button> <p>
+		</center>
+				
+		<div class="col-lg-12">
+			<h3>Errors</h3>
+			
+			<div ng-bind-html="ctrl.getHtml( ctrl.props.result.listevents)"></div>
+			
+		</div>
+		
+		<div class="col-lg-12">
+			<h3>Parameters</h3>
+			
+			<table>
+			<tr>
+			<td style="padding: 1px 20px">   <label class="btn btn-info btn-xs" ng-click="ctrl.propsExpand( true )">Expand all</button>  </td>
+			<td style="padding: 1px 20px">   <label class="btn btn-primary btn-xs" ng-click="ctrl.propsExpand( false )">Collapse all</button> </td>
+			<td style="padding: 1px 20px">   
+				<div class="btn-group btn-group-toggle" >
+					  <label class="btn btn-danger btn-xs">
+					    <input type="radio" value="set" ng-model="ctrl.props.param.displaylevel">Only parameters set
+					  </label>
+					  <label class="btn btn-info btn-xs">
+					    <input type="radio" value="all" ng-model="ctrl.props.param.displaylevel">All parameters
+					  </label>
+				</div>
+			</td>
+			<td><input type="checkbox" ng-model="ctrl.props.displaycomments"></input>Display comments
+			
+			</tr>
+			</table>
+		
 
+			<div ng-repeat="(classproperties, listproperties) in ctrl.props.setup.properties">
+				<div class="alert alert-success">{{classproperties}}</div>
+			
+				<table class="table table-striped table-hover table-condensed" style="background-color:#dff0d8; width:100%">
+					<tbody ng-repeat="propertiefile in listproperties">
+						<tr>
+							<th style="width: 40px"><input type="checkbox" ng-model="propertiefile.show"></input></th>
+							<th colspan="3" style="text-align:left;width: 40px">{{propertiefile.name}}</th>
+						</tr>
+						<tr>
+							<td></td>
+							<td colspan="3" style="font-size: small;text-align:left;">{{propertiefile.filename}}</td>
+						</tr>
+						
+						<tr ng-if="propertiefile.show">
+							<td></td>
+							<td>
+								<table>
+								<tbody ng-repeat="keypropertie in propertiefile.keys">
+									<!-- <tr><td>{{keypropertie.name}}/enambe={{keypropertie.isEnable}}/platlevel={{ctrl.props.platlevel}}</td></tr> -->
+									<tr ng-show="ctrl.propsShow( keypropertie )">
+										<td style="{{ctrl.propsStyle( keypropertie )}}">{{keypropertie.name}}</td>
+										<td style="{{ctrl.propsStyle( keypropertie )}}">
+											<div ng-if="keypropertie.isEnable">{{keypropertie.value}}</div>
+											<div ng-if=" ! keypropertie.isEnable">(default) {{keypropertie.value}}</div>
+										</td>
+																			
+									</tr>
+									<tr ng-show="ctrl.propsShow( keypropertie ) && ctrl.props.displaycomments">
+										
+										<td colspan="2" style="background-color: #d5d5d5;padding: 1px 30px">
+										 {{ctrl.getHtml( keypropertie.comments)}}
+										 </td>
+									</tr>
+								</tbody>
+								</table>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+							
+			</div>
+					
+			<!-- <div class="alert alert-success">Properties={{ctrl.props.properties}}</div> -->
+														
+			<h3>Tenants</h3>
+			<select  ng-model="ctrl.props.currenttenantid" >
+				<option ng-repeat="item in ctrl.propsGetTenants()" value="{{item}}">Tenant {{item}}</option>
+			</select>
+			
+			
+			<table class="table table-striped table-hover table-condensed" style="background-color:#dff0d8; width:100%">
+				<tbody ng-repeat="propertiefile in ctrl.props.setup.tenants[ ctrl.props.currenttenantid ]">
+					<tr>
+						<th style="width: 40px"><input type="checkbox" ng-model="propertiefile.show"></input></th>
+						<th colspan="3" style="text-align:left;width: 40px">{{propertiefile.name}}</th>
+					</tr>
+					<tr>
+						<td></td>
+						<td colspan="3" style="font-size: small;text-align:left;">{{propertiefile.filename}}</td>
+					</tr>
+					
+					<tr ng-if="propertiefile.show">
+						<td></td>
+						<td>
+							<table>
+							<tbody ng-repeat="keypropertie in propertiefile.keys">
+								<!-- <tr><td>{{keypropertie.name}}/enambe={{keypropertie.isEnable}}/platlevel={{ctrl.props.platlevel}}</td></tr> -->
+								<tr ng-show="ctrl.propsShow( keypropertie )">
+									<td style="{{ctrl.propsStyle( keypropertie )}}">{{keypropertie.name}}</td>
+									<td style="{{ctrl.propsStyle( keypropertie )}}">
+										<div ng-if="keypropertie.isEnable">{{keypropertie.value}}</div>
+										<div ng-if=" ! keypropertie.isEnable"><i>(default)</i> {{keypropertie.value}}</div>
+									</td>
+																		
+								</tr>
+								<tr ng-show="ctrl.propsShow( keypropertie )">
+									
+									<td colspan="2" style="background-color: #d5d5d5;padding: 1px 30px">
+									 {{ctrl.getHtml( keypropertie.comments)}}
+									 </td>
+								</tr>
+							</tbody>
+							</table>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+							
+			
+		
+		</div> <!--  end div 12 on result -->
+	</div> <!--  end navbar properties -->
 
 	<!--  ************************************************************  -->	
-	<!--  Context Jobs		 										-->
+	<!--  Server		 										-->
 	<!--  ************************************************************  -->		
 	<!-- Keep it ng-show, else the file drop will not work ! -->	
 	<div class="col-lg-12" ng-show="ctrl.navbaractiv == 'context'">
-	
-		<div ng-show="ctrl.inprogress">
-							<span class="Loading">.</span>
-							Please wait, collect in progress
+		<p>
+		<center>
+			<div ng-show="ctrl.inprogress">
+				<span class="Loading">.</span>
+				Please wait, collect in progress
+			</div>
+		
+			<button class="btn btn-success" ng-click="ctrl.propsCollect( false, true, false )" ng-disabled="ctrl.inprogress">Collect Server information</button> <p>
+		</center>
+		
+		<div class="col-lg-12">
+			<h3>Errors</h3>
+			
+			<div ng-bind-html="ctrl.getHtml( ctrl.props.result.listevents)"></div>
+			
 		</div>
-		<button class="btn btn-success" ng-click="ctrl.launchAnalysis()">Collect</button> <p>
-		<h1>Context</h1>
+		<div class="col-lg-12">
+			<h3>Parameters</h3>
+			<div ng-repeat="(classproperties, listproperties) in ctrl.props.tomcat.properties">
+				<div class="alert alert-success">{{classproperties}}</div>
+			
+				<table class="table table-striped table-hover table-condensed" style="background-color:#dff0d8; width:100%">
+					<tbody ng-repeat="propertiefile in listproperties">
+						<tr>
+							<th style="width: 40px"><input type="checkbox" ng-model="propertiefile.show"></input></th>
+							<th colspan="3" style="text-align:left;width: 40px">{{propertiefile.name}}</th>
+						</tr>
+						<tr>
+							<td></td>
+							<td colspan="3" style="font-size: small;text-align:left;">{{propertiefile.filename}}</td>
+						</tr>
+						
+						<tr ng-if="propertiefile.show">
+							<td></td>
+							<td>
+								<table>
+								<tbody ng-repeat="keypropertie in propertiefile.keys">
+									<!-- <tr><td>{{keypropertie.name}}/enambe={{keypropertie.isEnable}}/platlevel={{ctrl.props.platlevel}}</td></tr> -->
+									<tr ng-show="ctrl.propsShow( keypropertie )">
+										<td style="{{ctrl.propsStyle( keypropertie )}}">{{keypropertie.name}}</td>
+										<td style="{{ctrl.propsStyle( keypropertie )}}">
+											<div ng-if="keypropertie.isEnable">{{keypropertie.value}}</div>
+											<div ng-if=" ! keypropertie.isEnable">(default) {{keypropertie.value}}</div>
+										</td>
+																			
+									</tr>
+									<tr ng-show="ctrl.propsShow( keypropertie ) && ctrl.props.displaycomments">
+										
+										<td colspan="2" style="background-color: #d5d5d5;padding: 1px 30px">
+										 {{ctrl.getHtml( keypropertie.comments)}}
+										 </td>
+									</tr>
+								</tbody>
+								</table>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+								
+			</div>
+			<h3>Content</h3>
+			<div ng-repeat="fileitem in ctrl.props.tomcat.contents">
+				<div class="alert alert-success">{{fileitem.name}}</div>
+				<textarea ng-model="fileitem.content" style="width:100%;" rows="8" readonly></textarea>
+			</div>
+			
 		
-		<h1>Datasource</h1>
-		
-		<h1>Logs</h1>
-	</div>
+		</div> <!--  end div 12 on result -->
+	</div> <!--  end navbar properties -->
 
 		
+
+	<!--  ************************************************************  -->	
+	<!--  Analysis		 										-->
+	<!--  ************************************************************  -->		
+	<!-- Keep it ng-show, else the file drop will not work ! -->	
+	<div class="col-lg-12" ng-show="ctrl.navbaractiv == 'recommendations'">
+		<p>
+		<center>
+			<div ng-show="ctrl.inprogress">
+				<span class="Loading">.</span>
+				Please wait, collect in progress
+			</div>
+		
+			<button class="btn btn-success" ng-click="ctrl.propsCollect( false, false,true )" ng-disabled="ctrl.inprogress">Collect recommendations</button> <p>
+		</center>
+		
+		<div class="col-lg-12">
+			<h3>Errors</h3>
+			
+			<div ng-bind-html="ctrl.getHtml( ctrl.props.result.listevents)"></div>
+			
+		</div>
+		<div class="col-lg-12">
+			<h3>Recommendations</h3>
+			<div ng-repeat="item in ctrl.props.analysis.indicators">
+				
+				<div class="{{ctrl.indicatorCssClass( item )}}">
+					<div class="panel-heading">{{item.title}}</div>
+					<div style="padding: 10px 10px">
+						<p>
+						<div style="text-align:center;background-color: rgb(114, 191, 210)">Parameters</div>
+						<table class="table table-bordered">
+							<tr ng-repeat="(key,value) in item.infos">
+								<td style="padding: 10px 5px;">{{key}}</td><td>{{value}}</td>
+							</tr>
+						</table>
+						<p>
+						<div style="text-align:center;background-color: rgb(114, 191, 210)">Recommendations</div>
+						
+						<table class="table table-bordered">
+						<tbody  ng-repeat="info in item.recommendations">
+							<tr>
+								<td style="padding: 10px 5px;">{{info.name}}</td>
+								<td style="padding: 10px 5px;">{{info.value}}</td>
+								<td style="padding: 10px 5px;">
+									<div class="label label-danger" ng-if="info.level == 'DANGER'">Danger</div>
+									<div class="label label-warning" ng-if="info.level == 'WARNING'">Warning</div>
+									<div class="label label-info" ng-if="info.level == 'INFO'">Info</div>
+									<div class="label label-success" ng-if="info.level == 'SUCCESS'">Correct</div>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td colspan="2" style="padding: 10px 5px;">{{info.explanation}}</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td colspan="2" style="padding: 10px 5px;">{{info.whattodo}}</td>
+							</tr>
+						</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+	
 	<!--  ************************************************************  -->	
 	<!--  Differentiel	 										-->
 	<!--  ************************************************************  -->		
@@ -134,16 +388,6 @@
 				<div>
 					<p>
 					<table style="width:100%">
-					<tr style="padding:10px"><td colspan="2" style="text-align:center;background-color: rgb(114, 191, 210)">Application</td></tr>
-					<tr style="padding:10px 5px 20px 10px;"><td>Comparison application</td><td>
-						<input type="checkbox" ng-model="ctrl.diff.param.useLocalFile" title="Use this Bonita application to compare with the referentiel"></input>Use this application<br>
-						</td>
-					</tr>
-					<tr style="padding:10px 5px 20px 10px;"><td>Comparison application directory:</td>
-						<td>
-						<input  ng-model="ctrl.diff.param.comparaisonFile" style="width: 100%;" ng-disabled="ctrl.diff.param.useLocalFile" title="Give a directory accessible by the server, where a bundle exists"></input> <br>
-					 </td>
-					 </tr>
 					 
 					 
 					<tr style="padding: 10px;"><td colspan="2" style="text-align:center;background-color: rgb(114, 191, 210)">Referentiel</td></tr>
@@ -208,7 +452,7 @@
 				<div class="alert alert-success">Two applications are identicals</div>
 			</div>
 		
-			<!-- <a ng-click="ctrl.analysisExportData()" title="Click to export to Excel file"><img src="img/docexcel.gif" /></a> -->
+			<a ng-click="ctrl.analysisExportData('comparison')" title="Click to export to a Excel file"><img src="img/docexcel.gif" /></a>
 			
 			<div class="btn-group btn-group-toggle" >
 			  <label class="btn btn-danger">
@@ -261,6 +505,30 @@
 				</tbody>
 			</table>
 		</div>
+	</div>
+	
+	
+	<!--  ************************************************************  -->	
+	<!--  Parameters Jobs		 										-->
+	<!--  ************************************************************  -->		
+	<!-- Keep it ng-show, else the file drop will not work ! -->	
+	<div class="col-lg-12" ng-show="ctrl.navbaractiv == 'parameters'">
+		<p>
+		Select the Bonita application to use in the different function. It may be the local application (this server), or you can set a different path, to check a Bonita application downloaded on your disk.
+		<table style="width:100%">
+		
+		<tr style="padding:10px"><td colspan="2" style="text-align:center;background-color: rgb(114, 191, 210)">Application</td></tr>
+		<tr style="padding:10px 5px 20px 10px;"><td>Local application</td><td>
+			<input type="checkbox" ng-model="ctrl.props.param.useLocalFile" title="Use this Bonita application to compare with the referentiel"></input>Use this application<br>
+			</td>
+		</tr>
+		<tr style="padding:10px 5px 20px 10px;"><td>Application directory:</td>
+			<td>
+			<input ng-model="ctrl.diff.props.comparaisonFile" style="width: 100%;" ng-disabled="ctrl.props.param.useLocalFile" title="Give a directory accessible by the server, where a bundle exists"></input> <br>
+		 </td>
+		 </tr>
+		 
+		</table>
 	</div>
 </div> <!--  class component -->
 </div>
