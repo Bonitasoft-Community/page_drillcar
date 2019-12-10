@@ -53,12 +53,13 @@
 		<table><tr><td><h1>Drill Car</h1></td><td rowspan="2"><img src="img/drillcar.jpg" width="150" heigth="150" /></td></tr>
 			<tr><td>
 				<center>
-					V1.0
+					V1.0.1
 				</center>
 			</td></tr>
 			<tr><td>
 				<div id="showHistory" ng-if="ctrl.isshowhistory" style="border-width:2px;border-style:ridge;border-color:blue">
 					1.0 2019 November<br>
+					1.0.1 2019 December<br>
 				</div>
 			</td></tr>
 		</table>
@@ -84,7 +85,7 @@
 		<li ng-class="{active: active, disabled: false}" id="form-tab" heading="differentiel" active="true" title="Differentiel" select="ctrl.navbaractiv == 'differentiel'" class="{{ctrl.getNavClass('differentiel')}}" style="{{ctrl.getNavStyle('differentiel')}}">
 			  <a  ng-click="ctrl.navbaractiv='differentiel'" class="ng-binding">Differentiel</a>
 		</li>
-		<li ng-class="{active: active, disabled: false}" id="form-tab" heading="parameters" active="true" title="Parameters" select="ctrl.navbaractiv == 'parameters'" class="{{ctrl.getNavClass('differentiel')}}" style="{{ctrl.getNavStyle('differentiel')}}">
+		<li ng-class="{active: active, disabled: false}" id="form-tab" heading="parameters" active="true" title="Parameters" select="ctrl.navbaractiv == 'parameters'" class="{{ctrl.getNavClass('parameters')}}" style="{{ctrl.getNavStyle('parameters')}}">
 			  <a  ng-click="ctrl.navbaractiv='parameters'" class="ng-binding">Parameters</a>
 		</li>
 		
@@ -392,16 +393,19 @@
 					 
 					<tr style="padding: 10px;"><td colspan="2" style="text-align:center;background-color: rgb(114, 191, 210)">Referentiel</td></tr>
 					<tr style="padding: 10px 5px 20px 10px;">
-						<td>Reference application</td><td>
-							<input type="checkbox" ng-model="ctrl.diff.param.referentielIsABundle" title="Referentiel is a bundle. Then, tenant setup is compared to the template (else, directory per directory)"></input>Reference is a Bundle? If yes, the bundle must be uncompressed in a directory, and started one time (bonita.war must be uncompressed too)<br>
+						<td style="width:200px">Reference is a Bundle?</td><td>
+							<input type="checkbox" ng-model="ctrl.diff.param.referentielIsABundle" title="Referentiel is a bundle. Then, tenant setup is compared to the template (else, directory per directory)"></input><br>
 						</td>
 					 </tr>
 					 <tr style="padding: 10px 5px 20px 10px;">
 					 	<td>Reference application directory:</td>
 						<td><input  ng-model="ctrl.diff.param.referenceFile" style="width: 100%;" title="Give a directory accessible by the server, where a Bonita Bundle is deployed"></input></td>
 					</tr>
-					
-					
+					<tr><td colspan="2">
+						If the reference is a bundle, the comparison is different (there are no tenant directory in a Bundle, the comparison runs with the Template). You have to uncompress the Bundle, then to uncompress the Bonita War to execute a bundle comparison. or you can start one time the Bundle, and it will be expanded correctly for the comparison.<br>
+                        You can give a second Bonita directory to compare a UAT and a PRODUCTION platform, for example.					
+						</td>
+					<tr>
 					<tr style="padding: 10px;"><td colspan="2" style="text-align:center;background-color: rgb(114, 191, 210)">Parameters</td></tr>
 					<tr style="padding: 10px 5px 20px 10px;"><td>Compare XML:</td><td><input type="checkbox" ng-model="ctrl.diff.param.compareContextXml" title="XML files are opened, and compare nodes per nodes"></input></td></tr> 
 					<tr style="padding: 10px 5px 20px 10px;"><td>Ignore image:</td><td><input type="checkbox" ng-model="ctrl.diff.param.ignoreImage" title="Images (JPEG, GIFF, ...) files are ignored"></input></td></tr>
