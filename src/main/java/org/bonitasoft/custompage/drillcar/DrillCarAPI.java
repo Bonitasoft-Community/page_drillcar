@@ -62,12 +62,12 @@ public class DrillCarAPI {
         // ok, get the value of decoration
         
         Map<String,Object> result=new HashMap<String,Object>();
-        if (collectParameter.collectSetup)
+        if (collectParameter.listTypeCollect.contains(TYPECOLLECT.SETUP))
             result.put("setup", decoMap.getMap( TYPECOLLECT.SETUP));
-        if (collectParameter.collectServer)
-            result.put("tomcat", decoMap.getMap( TYPECOLLECT.TOMCAT));
+        if (collectParameter.listTypeCollect.contains(TYPECOLLECT.SERVER))
+            result.put("tomcat", decoMap.getMap( TYPECOLLECT.SERVER));
         
-        if (collectParameter.collectAnalysis)
+        if (collectParameter.listTypeCollect.contains(TYPECOLLECT.ANALYSIS))
             result.put("analysis", decoMap.getMap( TYPECOLLECT.ANALYSIS));
         // collect errors
         listEvents.addAll( collectResult.getErrors());
