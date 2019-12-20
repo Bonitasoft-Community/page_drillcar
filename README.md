@@ -16,7 +16,7 @@ Access the Tomcat main parameters files : datasource definition,
  
 <h1>Recommendations</h1>
 The page check your platform from a serie of recommendation. It show you the  different setup you should update to have a efficient platform
-<img src="screenshot_recommendations.jpg"/>
+<img src="screenshoot_recommendations.jpg"/>
  	 
 <h1>Comparison</h1>	 
 Compare your platform from a factory installation
