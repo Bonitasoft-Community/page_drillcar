@@ -124,8 +124,11 @@ appCommand.controller('DrillControler',
 	}
 	this.propsGetTenants = function() {
 		var listTenants = [];
-		for (var i in this.props.tenants)
-			listTenants.push( i );
+		console.log("tenants props="+angular.toJson( this.props))
+		if (this.props.setup && this.props.setup.tenants) {
+			for (var i in this.props.setup.tenants)
+				listTenants.push( i );
+		}
 		return listTenants;
 	}
 	

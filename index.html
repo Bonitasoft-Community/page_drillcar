@@ -53,13 +53,14 @@
 		<table><tr><td><h1>Drill Car</h1></td><td rowspan="2"><img src="img/drillcar.jpg" width="150" heigth="150" /></td></tr>
 			<tr><td>
 				<center>
-					V1.0.1
+					V1.2
 				</center>
 			</td></tr>
 			<tr><td>
 				<div id="showHistory" ng-if="ctrl.isshowhistory" style="border-width:2px;border-style:ridge;border-color:blue">
 					1.0 2019 November<br>
-					1.0.1 2019 December<br>
+					1.1 2019 December<br>
+					1.2 2019 December<br>
 				</div>
 			</td></tr>
 		</table>
@@ -109,7 +110,7 @@
 			<button class="btn btn-success" ng-click="ctrl.propsCollect( true, false, false )" ng-disabled="ctrl.inprogress">Collect Setup properties</button> <p>
 		</center>
 				
-		<div class="col-lg-12">
+		<div class="col-lg-12" ng-if="ctrl.props.result.listevents.length > 0">
 			<h3>Errors</h3>
 			
 			<div ng-bind-html="ctrl.getHtml( ctrl.props.result.listevents)"></div>
@@ -248,12 +249,14 @@
 			<button class="btn btn-success" ng-click="ctrl.propsCollect( false, true, false )" ng-disabled="ctrl.inprogress">Collect Server information</button> <p>
 		</center>
 		
-		<div class="col-lg-12">
+		<div class="col-lg-12"  ng-if="ctrl.props.result.listevents.length > 0">
 			<h3>Errors</h3>
 			
 			<div ng-bind-html="ctrl.getHtml( ctrl.props.result.listevents)"></div>
 			
 		</div>
+		event={{ctrl.props.result.listevents}}
+		length={{ctrl.props.result.listevents.length}}
 		<div class="col-lg-12">
 			<h3>Parameters</h3>
 			<div ng-repeat="(classproperties, listproperties) in ctrl.props.tomcat.properties">
@@ -325,7 +328,7 @@
 			<button class="btn btn-success" ng-click="ctrl.propsCollect( false, false,true )" ng-disabled="ctrl.inprogress">Collect recommendations</button> <p>
 		</center>
 		
-		<div class="col-lg-12">
+		<div class="col-lg-12" ng-if="ctrl.props.result.listevents.length > 0">
 			<h3>Errors</h3>
 			
 			<div ng-bind-html="ctrl.getHtml( ctrl.props.result.listevents)"></div>
@@ -456,7 +459,7 @@
 				<div class="alert alert-success">Two applications are identicals</div>
 			</div>
 		
-			<a ng-click="ctrl.analysisExportData('comparison')" title="Click to export to a Excel file"><img src="img/docexcel.gif" /></a>
+			<!-- <a ng-click="ctrl.analysisExportData('comparison')" title="Click to export to a Excel file"><img src="img/docexcel.gif" /></a> -->
 			
 			<div class="btn-group btn-group-toggle" >
 			  <label class="btn btn-danger">

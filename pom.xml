@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.bonitasoft.custompage</groupId>
 	<artifactId>CustomPageDrillCar</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.1</version>
 	<dependencies>
 		<dependency>
 			<groupId>org.bonitasoft.engine</groupId>
@@ -23,7 +23,7 @@
 		<dependency>
 			<groupId>org.bonitasoft.serverconfiguration</groupId>
 			<artifactId>bonita-serverconfiguration</artifactId>
-			<version>1.1.0</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bonitasoft.log.event</groupId>
@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>org.bonitasoft.properties</groupId>
 			<artifactId>bonita-properties</artifactId>
-			<version>2.1.0</version>
+			<version>2.1.1</version>
 		</dependency>
 		<!--  copy the library from the BonitaServerConfiguration pom.xml -->
 		<dependency>
