@@ -56,7 +56,7 @@ appCommand.controller('DrillControler',
 	// -----------------------------------------------------------------------------------------
 	//  										Properties
 	// -----------------------------------------------------------------------------------------
-	this.props = {	'param' : { 'collectSetup':true, 'collectServer':true, 'collectAnalysis':true, 'useLocalFile':true, 'displaylevel': 'all'}, 
+	this.props = {	'param' : { 'collectSetup':true, 'collectServer':true, 'collectAnalysis':true, 'doSetupPull':true, 'dosetupull': true, 'displaylevel': 'all'}, 
 					'platform': [], 
 					'tenants': { 
 						'list':[], 
@@ -177,6 +177,7 @@ appCommand.controller('DrillControler',
 	this.diff = {"displaylevel": 100,
 				"param": 
 					{"useLocalFile": true, 
+					"doSetupPull" : true,
 					"referentielIsABundle": true,
 					"comparaisonFile": "", 
 					"referenceFile":'',

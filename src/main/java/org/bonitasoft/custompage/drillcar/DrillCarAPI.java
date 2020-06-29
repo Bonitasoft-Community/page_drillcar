@@ -46,7 +46,8 @@ public class DrillCarAPI {
             localBonitaConfig = BonitaConfigPath.getInstance(fileBundle);
             currentConfig = ConfigAPI.getInstance( localBonitaConfig );
             collectParameter.localFile = fileBundle;
-            listEvents.addAll( currentConfig.setupPull() );
+            if (collectParameter.doSetupPull)
+                listEvents.addAll( currentConfig.setupPull() );
         }
         else {
             localBonitaConfig = BonitaConfigPath.getInstance(collectParameter.localFile);

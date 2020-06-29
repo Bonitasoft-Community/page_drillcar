@@ -407,6 +407,11 @@
                         You can give a second Bonita directory to compare a UAT and a PRODUCTION platform, for example.					
 						</td>
 					<tr>
+					<tr style="padding: 10px 5px 20px 10px;">
+						<td style="width:200px">Do a Setup pull before the operation</td><td>
+							<input type="checkbox" ng-model="ctrl.diff.param.doSetupPull" title="Do a Setup pull before the operation"></input><br>
+						</td>
+					 </tr>
 					<tr style="padding: 10px;"><td colspan="2" style="text-align:center;background-color: rgb(114, 191, 210)">Parameters</td></tr>
 					<tr style="padding: 10px 5px 20px 10px;"><td>Compare XML:</td><td><input type="checkbox" ng-model="ctrl.diff.param.compareContextXml" title="XML files are opened, and compare nodes per nodes"></input></td></tr> 
 					<tr style="padding: 10px 5px 20px 10px;"><td>Ignore image:</td><td><input type="checkbox" ng-model="ctrl.diff.param.ignoreImage" title="Images (JPEG, GIFF, ...) files are ignored"></input></td></tr>
@@ -521,6 +526,11 @@
 		<p>
 		Select the Bonita application to use in the different function. It may be the local application (this server), or you can set a different path, to check a Bonita application downloaded on your disk.
 		<table style="width:100%">
+		<tr style="padding:10px"><td colspan="2" style="text-align:center;background-color: rgb(114, 191, 210)">Execution</td></tr>
+		<tr style="padding:10px 5px 20px 10px;"><td>Before each operation</td><td>
+			<input type="checkbox" ng-model="ctrl.props.param.doSetupPull" title="Do a setup pull before each operation"></input>Do a setup pull<br>
+			</td>
+		</tr>
 		
 		<tr style="padding:10px"><td colspan="2" style="text-align:center;background-color: rgb(114, 191, 210)">Application</td></tr>
 		<tr style="padding:10px 5px 20px 10px;"><td>Local application</td><td>
