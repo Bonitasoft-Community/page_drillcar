@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.bonitasoft.log.event.BEvent;
 import org.bonitasoft.log.event.BEventFactory;
+import org.bonitasoft.log.event.BEvent.Level;
 import org.bonitasoft.serverconfiguration.CollectOperation.TYPECOLLECT;
 import org.bonitasoft.serverconfiguration.CollectResult;
 import org.bonitasoft.serverconfiguration.CollectResult.COLLECTLOGSTRATEGY;
@@ -22,7 +23,9 @@ import org.bonitasoft.serverconfiguration.referentiel.BonitaConfigPath;
 
 public class DrillCarAPI {
 
-    /**
+
+    public static BEvent eventParameterError = new BEvent(DrillCarAPI.class.getName(), 1, Level.APPLICATIONERROR, "Parameter error", "Something is wrong with parameters", "Analysis can't be done", "Check error");
+/**
      * collect all properties information
      * @param parameters
      * @param pageDirectory
@@ -84,32 +87,46 @@ public class DrillCarAPI {
      * @return
      */
     public static Map<String, Object> diffAnalysis(Map<String, Object> parameters, File pageDirectory) {
-        ComparaisonParameter comparaisonParameter = ComparaisonParameter.getInstanceFromMap(parameters);
+        
+        ArrayList<BEvent> listEvents = new ArrayList<BEvent>();
+        ComparaisonParameter comparaisonParameter;
+        try {
+            comparaisonParameter = ComparaisonParameter.getInstanceFromMap(parameters);
+        } catch(Exception e) 
+        {
+            listEvents.add( new BEvent(eventParameterError, e, ""));
+            Map<String,Object> result = new HashMap<>();
+            result.put("listevents", BEventFactory.getSyntheticHtml(listEvents));
+            return result;
+        }
 
         ConfigAPI currentConfig;
         // value is D:\bonita\BPM-SP-7.9.0\workspace\tomcat\server\temp\bonita_portal_10028@Dragon-Pierre-Yves\tenants\1\pages\custompage_drillcar
-        File fileBundle = null;
-        fileBundle = new File(pageDirectory.getAbsoluteFile() + "/../../../../../../../");
-        ArrayList<BEvent> listEvents = new ArrayList<BEvent>();
+        File localServerFile = null;
+        localServerFile = new File(pageDirectory.getAbsoluteFile() + "/../../../../../../../");
         
         try {
-            fileBundle = new File(fileBundle.getCanonicalPath());
+            localServerFile = new File(localServerFile.getCanonicalPath());
         } catch (Exception e) {
         }
 
-        if (comparaisonParameter.useLocalFile) {
+        File applicationFile=null;
+        if (comparaisonParameter.useLocalServer) {
             
-            currentConfig = ConfigAPI.getInstance( BonitaConfigPath.getInstance( fileBundle)) ;
-            listEvents.addAll( currentConfig.setupPull() );
+            currentConfig = ConfigAPI.getInstance( BonitaConfigPath.getInstance( localServerFile)) ;
+            applicationFile = localServerFile;
+            if (comparaisonParameter.doSetupPull)
+                listEvents.addAll( currentConfig.setupPull() );
         }
-        else
-            currentConfig = ConfigAPI.getInstance( BonitaConfigPath.getInstance( comparaisonParameter.localFile));
-
+        else {
+            currentConfig = ConfigAPI.getInstance( BonitaConfigPath.getInstance( comparaisonParameter.applicationFile));
+            applicationFile = comparaisonParameter.applicationFile;
+        }
         BonitaConfigBundle bonitaReferentiel = BonitaConfigBundle.getInstance(comparaisonParameter.referenceFile);
 
         ComparaisonResult comparaison = currentConfig.compareWithReferentiel(bonitaReferentiel, comparaisonParameter, LOGSTRATEGY.NOLOG);
 
-        ComparaisonResultDecoMap decoMap = new ComparaisonResultDecoMap(comparaison, "", comparaisonParameter.localFile, comparaisonParameter.referenceFile);
+        ComparaisonResultDecoMap decoMap = new ComparaisonResultDecoMap(comparaison, "", applicationFile, comparaisonParameter.referenceFile);
         listEvents.addAll( comparaison.getErrors());
         Map<String,Object> result = decoMap.getMap();
         result.put("listevents", BEventFactory.getSyntheticHtml(listEvents));

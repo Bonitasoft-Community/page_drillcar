@@ -56,7 +56,7 @@ appCommand.controller('DrillControler',
 	// -----------------------------------------------------------------------------------------
 	//  										Properties
 	// -----------------------------------------------------------------------------------------
-	this.props = {	'param' : { 'collectSetup':true, 'collectServer':true, 'collectAnalysis':true, 'doSetupPull':true, 'dosetupull': true, 'displaylevel': 'all'}, 
+	this.props = {	'param' : { 'collectSetup':true, 'collectServer':true, 'collectAnalysis':true, 'doSetupPull':true, 'dosetupull': true, 'displaylevel': 'all', 'useLocalFile' : true}, 
 					'platform': [], 
 					'tenants': { 
 						'list':[], 
@@ -176,11 +176,15 @@ appCommand.controller('DrillControler',
 
 	this.diff = {"displaylevel": 100,
 				"param": 
-					{"useLocalFile": true, 
-					"doSetupPull" : true,
+					{ 
 					"referentielIsABundle": true,
-					"comparaisonFile": "", 
 					"referenceFile":'',
+					
+					"useLocalServer" : true,						
+					"applicationFile": "",
+					"doSetupPull" : true,
+					
+					
 					'compareContextXml': false,
 					'ignoreImage': true,
 	            	'ignoreBonitaTranslationFile': true,
@@ -188,7 +192,7 @@ appCommand.controller('DrillControler',
 	            	'ignoreLicence':true,
 	            	'ignoreSetup':false,
 	            	'ignoreDeferedJs': true
-					}
+					}				
 				};
 	
 	// D:/pym/Google Drive/consulting/20190429 Verizon Migration/analysis/7.8.4/BonitaSubscription-7.8.4_SIT_110119-2
