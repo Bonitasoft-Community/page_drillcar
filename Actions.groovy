@@ -154,7 +154,7 @@ public class Actions {
             else if ("propscollect".equals(action))
             {
                 File pageDirectory = pageResourceProvider.getPageDirectory();
-                actionAnswer.responseMap.putAll( DrillCarAPI.propsCollects( jsonParam , pageDirectory ));
+                actionAnswer.responseMap.putAll( DrillCarAPI.propsCollects( jsonParam , pageDirectory, processAPI, identityAPI,tenantId ));
             }
 			else if ("saveprops".equals(action))	{
 				logger.info("Save properties paramJsonSt="+paramJsonSt);

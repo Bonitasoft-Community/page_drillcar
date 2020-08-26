@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bonitasoft.engine.api.APIAccessor;
+import org.bonitasoft.engine.api.IdentityAPI;
+import org.bonitasoft.engine.api.ProcessAPI;
 import org.bonitasoft.log.event.BEvent;
 import org.bonitasoft.log.event.BEventFactory;
 import org.bonitasoft.log.event.BEvent.Level;
+import org.bonitasoft.serverconfiguration.CollectOperation.BonitaAccessor;
 import org.bonitasoft.serverconfiguration.CollectOperation.TYPECOLLECT;
 import org.bonitasoft.serverconfiguration.CollectResult;
 import org.bonitasoft.serverconfiguration.CollectResult.COLLECTLOGSTRATEGY;
@@ -31,11 +35,15 @@ public class DrillCarAPI {
      * @param pageDirectory
      * @return
      */
-    public static Map<String, Object> propsCollects(Map<String, Object> parameters, File pageDirectory) {
-        
+    public static Map<String, Object> propsCollects(Map<String, Object> parameters, File pageDirectory,ProcessAPI processAPI, IdentityAPI identityAPI, long tenantId) {
+        BonitaAccessor bonitaAccessor = new BonitaAccessor();
+        bonitaAccessor.processAPI = processAPI;
+        bonitaAccessor.identityAPI = identityAPI;
+        bonitaAccessor.tenantId = tenantId;
+            
         File fileBundle = null;
         fileBundle = new File(pageDirectory.getAbsoluteFile() + "/../../../../../../../");
-        ArrayList<BEvent> listEvents = new ArrayList<BEvent>();
+        ArrayList<BEvent> listEvents = new ArrayList<>();
         
         try {
             fileBundle = new File(fileBundle.getCanonicalPath());
@@ -58,14 +66,15 @@ public class DrillCarAPI {
         }
 
         // now, collect result
-        CollectResult collectResult = currentConfig.collectParameters( collectParameter, COLLECTLOGSTRATEGY.LOGALL);
+        // Note : collectParameters contains the marker "hidePassword", to pilot the collect. In case of analysis (and only for analysis), this marker is set to false
+        CollectResult collectResult = currentConfig.collectParameters( collectParameter, COLLECTLOGSTRATEGY.LOGALL, bonitaAccessor);
         
         // I want the result in JSON, so use a ResultDecoMap
         CollectResultDecoMap decoMap = new CollectResultDecoMap(collectResult, "", localBonitaConfig.getRootPath() );
         decoMap.setLineFeedToHtml( true );
         // ok, get the value of decoration
         
-        Map<String,Object> result=new HashMap<String,Object>();
+        Map<String,Object> result=new HashMap<>();
         if (collectParameter.listTypeCollect.contains(TYPECOLLECT.SETUP))
             result.put("setup", decoMap.getMap( TYPECOLLECT.SETUP));
         if (collectParameter.listTypeCollect.contains(TYPECOLLECT.SERVER))
@@ -88,7 +97,7 @@ public class DrillCarAPI {
      */
     public static Map<String, Object> diffAnalysis(Map<String, Object> parameters, File pageDirectory) {
         
-        ArrayList<BEvent> listEvents = new ArrayList<BEvent>();
+        ArrayList<BEvent> listEvents = new ArrayList<>();
         ComparaisonParameter comparaisonParameter;
         try {
             comparaisonParameter = ComparaisonParameter.getInstanceFromMap(parameters);
