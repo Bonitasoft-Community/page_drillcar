@@ -5,12 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bonitasoft.engine.api.APIAccessor;
 import org.bonitasoft.engine.api.IdentityAPI;
 import org.bonitasoft.engine.api.ProcessAPI;
 import org.bonitasoft.log.event.BEvent;
-import org.bonitasoft.log.event.BEventFactory;
 import org.bonitasoft.log.event.BEvent.Level;
+import org.bonitasoft.log.event.BEventFactory;
 import org.bonitasoft.serverconfiguration.CollectOperation.BonitaAccessor;
 import org.bonitasoft.serverconfiguration.CollectOperation.TYPECOLLECT;
 import org.bonitasoft.serverconfiguration.CollectResult;
@@ -28,7 +27,7 @@ import org.bonitasoft.serverconfiguration.referentiel.BonitaConfigPath;
 public class DrillCarAPI {
 
 
-    public static BEvent eventParameterError = new BEvent(DrillCarAPI.class.getName(), 1, Level.APPLICATIONERROR, "Parameter error", "Something is wrong with parameters", "Analysis can't be done", "Check error");
+    public static final BEvent eventParameterError = new BEvent(DrillCarAPI.class.getName(), 1, Level.APPLICATIONERROR, "Parameter error", "Something is wrong with parameters", "Analysis can't be done", "Check error");
 /**
      * collect all properties information
      * @param parameters
@@ -57,7 +56,7 @@ public class DrillCarAPI {
             localBonitaConfig = BonitaConfigPath.getInstance(fileBundle);
             currentConfig = ConfigAPI.getInstance( localBonitaConfig );
             collectParameter.localFile = fileBundle;
-            if (collectParameter.doSetupPull)
+            if (collectParameter.doSetupPull && collectParameter.listTypeCollect.contains(TYPECOLLECT.SETUP))
                 listEvents.addAll( currentConfig.setupPull() );
         }
         else {

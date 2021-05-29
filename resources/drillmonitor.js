@@ -6,7 +6,7 @@
 (function() {
 
 
-var appCommand = angular.module('drillapp', ['googlechart', 'ui.bootstrap','ngSanitize', 'ngModal', 'ngMaterial']);
+var appCommand = angular.module('drillapp', ['googlechart', 'ui.bootstrap','ngSanitize', 'ngModal', 'ngMaterial',  'ngCookies']);
 
 
 /* Material : for the autocomplete
@@ -30,7 +30,7 @@ var appCommand = angular.module('drillapp', ['googlechart', 'ui.bootstrap','ngSa
 
 // Ping the server
 appCommand.controller('DrillControler',
-	function ( $http, $scope,$sce,$filter ) {
+	function ( $http, $scope,$sce,$filter, $cookies ) {
 
 	this.showhistory = function(show) {
 		this.isshowhistory = show;
@@ -49,6 +49,18 @@ appCommand.controller('DrillControler',
 		if (this.navbaractiv === tabtodisplay)
 			return 'border: 1px solid #c2c2c2;border-bottom-color: transparent;';
 		return '';
+	}
+	
+	
+	this.getHttpConfig = function () {
+		var additionalHeaders = {};
+		var csrfToken = $cookies.get('X-Bonita-API-Token');
+		if (csrfToken) {
+			additionalHeaders ['X-Bonita-API-Token'] = csrfToken;
+		}
+		var config= {"headers": additionalHeaders};
+		console.log("GetHttpConfig : "+angular.toJson( config));
+		return config;
 	}
 	
 	this.inprogress=false;
@@ -80,7 +92,7 @@ appCommand.controller('DrillControler',
 		
 		var json = encodeURI( angular.toJson( self.props.param, false));
 		
-		$http.get( '?page=custompage_drill&action=propscollect&paramjson='+json+'&t='+d.getTime() )
+		$http.get( '?page=custompage_drill&action=propscollect&paramjson='+json+'&t='+d.getTime() , this.getHttpConfig () )
 				.success( function ( jsonResult, statusHttp, headers, config ) {
 					
 					// connection is lost ?
@@ -206,7 +218,7 @@ appCommand.controller('DrillControler',
 
 		var json = encodeURI( angular.toJson( self.diff.param, false));
 		
-		$http.get( '?page=custompage_drill&action=diffanalysis&paramjson='+json+'&t='+d.getTime() )
+		$http.get( '?page=custompage_drill&action=diffanalysis&paramjson='+json+'&t='+d.getTime()  , this.getHttpConfig () )
 				.success( function ( jsonResult, statusHttp, headers, config ) {
 					
 					// connection is lost ?
@@ -251,7 +263,7 @@ appCommand.controller('DrillControler',
 		// 7.6 : the server force a cache on all URL, so to bypass the cache, then create a different URL
 		var d = new Date();
 
-		return $http.get( '?page=custompage_drillcar&action=queryusers&paramjson='+json+'&t='+d.getTime() )
+		return $http.get( '?page=custompage_drillcar&action=queryusers&paramjson='+json+'&t='+d.getTime() , this.getHttpConfig ()  )
 		.then( function ( jsonResult, statusHttp, headers, config ) {
 			console.log("QueryUser HTTP SUCCESS.1 - result= "+angular.toJson(jsonResult, false));
 				self.autocomplete.inprogress=false;
@@ -313,7 +325,7 @@ appCommand.controller('DrillControler',
 		// 7.6 : the server force a cache on all URL, so to bypass the cache, then create a different URL
 		var d = new Date();
 
-		$http.get( '?page=custompage_drillcar&action=saveprops&paramjson='+json +'&t='+d.getTime())
+		$http.get( '?page=custompage_drillcar&action=saveprops&paramjson='+json +'&t='+d.getTime() , this.getHttpConfig () )
 				.success( function ( jsonResult, statusHttp, headers, config ) {
 						console.log("history",jsonResult);
 						self.listevents		= jsonResult.listevents;
@@ -333,7 +345,7 @@ appCommand.controller('DrillControler',
 		// 7.6 : the server force a cache on all URL, so to bypass the cache, then create a different URL
 		var d = new Date();
 
-		$http.get( '?page=custompage_drillcar&action=loadprops&t='+d.getTime() )
+		$http.get( '?page=custompage_drillcar&action=loadprops&t='+d.getTime()  , this.getHttpConfig () )
 				.success( function ( jsonResult, statusHttp, headers, config ) {
 					
 						console.log("history",jsonResult);
